@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>网页翻译</title>
+        <meta charset="utf-8">
+        <title>User Center</title>
+        <!-- <link rel="stylesheet" href="css/dataVisonStyle.css"> -->
+        <link rel="stylesheet" href="static/css/stars.css">
+
+        <link rel="stylesheet" type="text/css" href="static/live_2D_assets/waifu.css" />
+        <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+        <link rel="stylesheet" href="static/css/navigate.css">
+
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <link href='https://fonts.googleapis.com/css?family=Montserrat:700,400' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" href="static/css/calendar.css">
+        <script src="static/js/axios.min.js"></script>
+        <script src="static/js/vue.js"></script>
+
+        <link rel="stylesheet" href="static/css/weather.css">
+
+        <link rel="stylesheet" href="static/css/buttons.css">
+        <script src="static/js/vue.js"></script>
+
+
+
+        <!-- 音乐播放器 -->
+        <link rel="stylesheet" href="static/node_modules/aplayer/dist/APlayer.min.css">
+        <script src="static/node_modules/aplayer/dist/APlayer.min.js">
+        </script>
+        <script src="static/node_modules/meting/dist/Meting.min.js">
+        </script>
+        <meting-js server="netease" type="playlist" id="2091761965" fixed="true" autoplay="false" loop="all" order="list"
+                   preload="auto" list-folded="true" list-max-height="500px" lrc-type="1">
+
+        </meting-js>
+        <!-- 11111111111111111111111111 -->
+
+
+
+        <link  rel="stylesheet" href="static/css/user.css">
+
+        <!-- axios -->
+        <script src="static/js/axios.min.js"></script>
+        <style>
+
+            form {
+                margin: 0 auto;
+                margin-top: 90px;
+                width: 80%;
+                height: 70%;
+                background-color: #f2f2f2;
+                padding: 20px;
+                border-radius: 10px;
+                box-shadow: 0 0 10px rgba(0,0,0,0.2);
+            }
+            label {
+                display: block;
+                margin-bottom: 10px;
+
+
+                color: #333;
+            }
+            textarea {
+                width: 105%;
+                padding: 10px;
+                border-radius: 5px;
+                border: none;
+                box-shadow: 0 0 5px rgba(0,0,0,0.2);
+                resize: none;
+            }
+            select {
+                width: 105%;
+                padding: 10px;
+                border-radius: 5px;
+                border: none;
+                box-shadow: 0 0 5px rgba(0,0,0,0.2);
+            }
+
+            .custom-btn {
+                margin-top: 20px;
+                width: 130px;
+                height: 40px;
+                color: #fff;
+                border-radius: 5px;
+                padding: 10px 25px;
+                font-family: 'Lato', sans-serif;
+                font-weight: 500;
+                background: #ce5fe2cf;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                position: relative;
+                display: inline-block;
+                box-shadow: inset 2px 2px 2px 0px rgba(255, 255, 255, .5),
+                7px 7px 20px 0px rgba(0, 0, 0, .1),
+                4px 4px 5px 0px rgba(0, 0, 0, .1);
+                outline: none;
+            }
+
+            .btn-9 {
+                border: none;
+                transition: all 0.3s ease;
+                overflow: hidden;
+            }
+
+            .btn-9:after {
+                position: absolute;
+                content: " ";
+                z-index: -1;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: #1fd1f9;
+                background-image: linear-gradient(315deg, #1fd1f9 0%, #b621fe 74%);
+                transition: all 0.3s ease;
+            }
+
+            .btn-9:hover {
+                background: transparent;
+                box-shadow: 4px 4px 6px 0 rgba(255, 255, 255, .5),
+                -4px -4px 6px 0 rgba(116, 125, 136, .2),
+                inset -4px -4px 6px 0 rgba(255, 255, 255, .5),
+                inset 4px 4px 6px 0 rgba(116, 125, 136, .3);
+                color: #fff;
+            }
+
+            .btn-9:hover:after {
+                -webkit-transform: scale(2) rotate(180deg);
+                transform: scale(2) rotate(180deg);
+                box-shadow: 4px 4px 6px 0 rgba(255, 255, 255, .5),
+                -4px -4px 6px 0 rgba(116, 125, 136, .2),
+                inset -4px -4px 6px 0 rgba(255, 255, 255, .5),
+                inset 4px 4px 6px 0 rgba(116, 125, 136, .3);
+            }
+        </style>
+    </head>
+    <body>
+    <nav class="shell close">
+        <header>
+            <div class="image-text">
+                <span class="image">
+                    <a href="user.jsp"><img src="UserServlet?actionName=userHead&iamgeName=${user.head}" alt="" ></a>
+                </span>
+                <div class="text logo-text">
+                    <span class="name">张旭</span>
+                    <span class="software">江西师范大学</span>
+                </div>
+            </div>
+            <i class="iconfont icon-xiangyoujiantou toggle"></i>
+        </header>
+        <div class="menu-bar">
+            <div class="menu">
+                <li class="search-box">
+                    <i class="iconfont icon-sousuo icon"> <img src="static/icon/搜索.png" style="max-width: 30px;"></i>
+
+                    <input type="text" placeholder="搜索...">
+                </li>
+                <ul class="menu-links">
+                    <li class="nav-link">
+                        <a href="index.jsp">
+                            <i class="iconfont icon-shouye icon"><img src="static/icon/主页.png" style="max-width: 30px;"></i>
+
+                            <span class="text nac-text">主页</span>
+                        </a>
+                    </li>
+
+                    <li class="nav-link">
+                        <a href="docs.jsp">
+                            <i class="iconfont icon-shoucangxiao icon"><img src="static/icon/星星.png"
+                                                                            style="max-width: 30px;"></i>
+                            <span class="text nac-text">我的收藏</span>
+                        </a>
+                    </li>
+
+                    <li class="nav-link">
+                        <a href="translate.html">
+                            <i class="iconfont icon-lishi icon"><img src="static/icon/翻译.png" style="max-width: 35px;"></i>
+                            <span class="text nac-text">中英互译</span>
+                        </a>
+                    </li>
+
+                    <li class="nav-link">
+                        <a href="game.jsp">
+                            <i class="iconfont icon-xiaoxi icon"><img src="static/icon/消息.png" style="max-width: 24px;"></i>
+                            <span class="text nac-text">消息</span>
+                        </a>
+                    </li>
+
+                    <li class="nav-link">
+                        <a href="dataVison.jsp">
+                            <i class="iconfont icon-fensi icon"><img src="static/icon/用户.png" style="max-width: 30px;"></i>
+                            <span class="text nac-text">用户数据</span>
+                        </a>
+                    </li>
+
+                    <li class="nav-link">
+                        <a href="write.jsp">
+                            <i class="iconfont icon-chuangzuo icon"><img src="static/icon/创作.png" style="max-width: 26px;"></i>
+                            <span class="text nac-text">创作中心</span>
+                        </a>
+                    </li>
+                    <li class="nav-link">
+                        <a href="chatAI.jsp">
+                            <i class="iconfont icon-chuangzuo icon"><img src="static/icon/设备-AI求助.png"
+                                                                         style="max-width: 26px;"></i>
+                            <span class="text nac-text">chatgpt</span>
+                        </a>
+                    </li>
+                    <li class="nav-link">
+                    </li>
+                    <li class="nav-link">
+                    </li>
+                    <li class="nav-link">
+                    </li>
+                    <li class="nav-link">
+                    </li>
+                    <li class="nav-link">
+                    </li>
+                </ul>
+
+
+                <div class="bottom-content">
+                    <li class="">
+                        <a href="UserServlet?actionName=logout">
+                            <i class="iconfont icon-zhuxiaoyuan icon"><img src="static/icon/注销登录.png"
+                                                                           style="max-width: 30px;"></i>
+                            <span class="text nac-text">注销</span>
+                        </a>
+                    </li>
+                    <li class="mode">
+                        <div class="sun-moon">
+                            <i class="iconfont icon-rijian icon sun"></i>
+                            <i class="iconfont icon-yejian icon moon"></i>
+                        </div>
+                        <span class="mode-text text">夜间模式</span>
+                        <div class="toggle-switch">
+                            <span class="switch"></span>
+                        </div>
+                    </li>
+                </div>
+            </div>
+
+        </div>
+
+    </nav>
+
+
+
+    <div class="shubiao"></div>
+    <!-- 星空 -->
+    <div class="main">
+        <div class="star"></div>
+        <div class="medium-star"></div>
+        <div class="big-star"></div>
+    </div>
+
+    <!-- 看板娘 -->
+    <div class="waifu " >
+        <div class="waifu-tips"></div>
+        <canvas id="live2d" width="270" height="270" class="live2d"></canvas>
+        <div class="waifu-tool">
+            <span class="fui-home"></span>
+            <span class="fui-chat"></span>
+            <span class="fui-eye"></span>
+            <span class="fui-user"></span>
+            <span class="fui-photo"></span>
+            <span class="fui-info-circle"></span>
+            <span class="fui-cross"></span>
+        </div>
+    </div>
+
+    <form>
+        <div style="display: flex; justify-content: space-between;">
+            <div style="width: 45%;">
+                <label for="source-text">原文本：</label>
+                <textarea id="source-text" name="source-text" rows="20" style="height: 100%"></textarea>
+            </div>
+            <div style="width: 45%;">
+                <label for="target-text">译文：</label>
+                <textarea id="target-text" name="target-text" rows="5" style="width: 100%; height: 100%" readonly></textarea>
+            </div>
+        </div>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px;">
+            <div style="width: 45%;">
+                <label for="target-language">目标语言：</label>
+                <select id="target-language" name="target-language">
+                    <option value="en">英语</option>
+                    <option value="fr">法语</option>
+                    <option value="es">西班牙语</option>
+                    <option value="de">德语</option>
+                    <option value="ja">日语</option>
+                    <option value="ko">韩语</option>
+                    <option value="zh-CN">中文（简体）</option>
+                    <option value="zh-TW">中文（繁体）</option>
+                </select>
+            </div>
+            <div style="width: 45%; display: flex; justify-content: center;">
+                <label>&nbsp;</label>
+                <button class="custom-btn btn-9" type="button" onclick="Trans()">翻译</button>
+            </div>
+        </div>
+    </form>
+        
+    </body>
+    <script>
+        function translateText(sourceText, targetLanguage) {
+            axios.get('https://apis.tianapi.com/fanyi/index', {
+                params: {
+                    key: 'e77b1711b4220ebd6e5ebdc4b8da7cd4',
+                    text: sourceText,
+                    lang: targetLanguage
+                }
+            }).then(function (response) {
+                console.log(response);
+                document.getElementById('target-text').value = response.data.result.dst;
+            }).catch(function (error) {
+                console.log(error);
+            });
+            return sourceText;
+        }
+        function Trans() {
+            const sourceText = document.getElementById('source-text').value;
+            const targetLanguage = document.getElementById('target-language').value;
+            const targetText = translateText(sourceText, targetLanguage);
+            // document.getElementById('target-text').value = targetText;
+        }
+
+
+    </script>
+    <script src="static/live_2D_assets/waifu-tips.js"></script>
+    <script src="static/live_2D_assets/live2d.js"></script>
+    <script type="text/javascript">initModel("live_2D_assets/")</script>
+    <script>
+        let img = document.querySelector('.shubiao')
+        // 定义小图片的旋转角度
+        let deg = 0
+        // 定义小图片位于网页左侧的位置
+        let imgx = 0
+        // 定义小图片位于网页顶部的位置
+        let imgy = 0
+        // 定义小图片x轴的位置
+        let imgl = 0
+        // 定义小图片y轴的位置
+        let imgt = 0
+        // 定义小图片翻转的角度
+        let y = 0
+        // 定义一个计数器
+        let index = 0
+
+        window.addEventListener('mousemove', function (xyz) {
+            // 获取网页左侧距离的图片位置
+            imgx = xyz.x - img.offsetLeft - img.clientWidth / 2
+            // 多去网页顶部距离图片的位置
+            imgy = xyz.y - img.offsetTop - img.clientHeight / 2
+            // 套入公式，定义图片的旋转角度
+            deg = 360 * Math.atan(imgy / imgx) / (2 * Math.PI)
+            // 每当鼠标移动的时候重置index
+            index = 0
+            // 定义当前鼠标的位置
+            let x = event.clientX
+            // 当鼠标的x轴大于图片的时候，提普安就要对着鼠标，所以需要将图片翻转过来
+            // 否则就不用翻转
+            if (img.offsetLeft < x) {
+                y = -180
+            } else {
+                y = 0
+            }
+        })
+        setInterval(() => {
+            // 设置小图片的旋转和翻转
+            img.style.transform = "rotateZ(" + deg + "deg) rotateY(" + y + "deg)"
+            index++
+            // 在这里设置小图片的位置和速度，并判断小图片到达鼠标位置时停止移动
+            if (index < 100) {
+                imgl += imgx / 100
+                imgt += imgy / 100
+            }
+            img.style.left = imgl + "px"
+            img.style.top = imgt + "px"
+        }, 10)
+    </script>
+
+
+    <!-- 导航栏 -->
+    <script>
+        const body = document.querySelector('body'),
+            shell = body.querySelector('nav'),
+            toggle = body.querySelector(".toggle"),
+            searchBtn = body.querySelector(".search-box"),
+            modeSwitch = body.querySelector(".toggle-switch"),
+            modeText = body.querySelector(".mode-text");
+        // 点击toggle元素时触发事件
+        toggle.addEventListener("click", () => {
+            // 切换shell元素的close类
+            shell.classList.toggle("close");
+        })
+        // 点击searchBtn元素时触发事件
+        searchBtn.addEventListener("click", () => {
+            // 移除shell元素的close类
+            shell.classList.remove("close");
+        })
+        // 点击modeSwitch元素时触发事件
+        modeSwitch.addEventListener("click", () => {
+            // 切换body元素的dark类
+            body.classList.toggle("dark");
+            // 如果body元素包含dark类
+            if (body.classList.contains("dark")) {
+                modeText.innerText = "白日模式";
+            } else {
+                modeText.innerText = "夜间模式";
+            }
+        });
+    </script>
+</html>

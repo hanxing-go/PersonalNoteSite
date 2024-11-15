@@ -1,0 +1,124 @@
+用户行为 actionName
+查询类型列表      actionName=list
+删除类型          actionName=delete
+添加/修改类型     actionName=addOrUpdate
+
+一、查询类型列表
+    前台
+        利用vue与ajax获取后台数据
+        v-for
+
+
+    后台：
+        web层:
+            1. 获取Session作用域中设置的user对象
+            2. 调用Service层的查询方法，查询当前登录用户的类型集合，返回集合
+            3. 返回json数据
+
+        Service层：
+            1. 调用Dao层的查询方法，通过用户ID查询类型集合
+            2. 返回类型列表
+
+        Dao层：
+            1. 编写sql语句，通过用户ID查询类型集合
+                     String sql= "select * from tb_note_type where userid=?";
+            2. 设置参数列表
+            3. 调用BaseDao的查询方法，返回集合
+            4. 返回集合
+
+二、删除类型
+    前台
+        绑定点击事件，调用ajax发送请求
+        首先弹出确认框，确认是否删除
+        如果确认删除：
+            1.获取类型ID
+            2.调用ajax发送请求
+            3.接收后台返回的resultInfo  json数据
+            4.判断code是否为1，如果为1，删除成功，刷新页面
+            5.如果code不为1，删除失败，弹出提示信息
+
+
+    后台
+        web层：
+            1.接收参数（类型ID)
+            2.调用Service的更新操作，返回ResultInfo对象
+            3.将ResultInfo对象转换为JSON格式的字符串，相应给ajax的回调函数
+
+        Service层
+            1.判断参数是否为空
+            2.调用Dao层，通过类型ID查询该类型下的笔记数量
+            3.如果云记数量大于0，说明存在子记录，不可删除，返回ResultInfo对象
+                code=0，msg="该类型下存在笔记，不可删除" 返回resultInfo对象
+            4.如果不存在子记录，调用Dao层的删除方法，通过类型ID删除指定的类型记录，返回受影响的行数
+            5.判断受影响的行数是否大于0，大于0，删除成功，返回ResultInfo对象
+                code=1，msg="删除成功" 返回resultInfo对象
+            6.如果受影响的行数小于等于0，删除失败，返回ResultInfo对象
+        Dao层：
+            通过类型ID查询该类型下的笔记数量
+            1.编写sql语句，通过类型ID查询该类型下的笔记数量
+                String sql="select count(*) from tb_note where typeid=?";
+            2.设置参数列表
+            3.调用BaseDao的查询方法，返回数量
+
+            通过类型ID删除指定的类型记录
+            1.编写sql语句，通过类型ID删除指定的类型记录
+                String sql="delete from tb_note_type where id=?";
+            2.设置参数列表
+            3.调用BaseDao的更新方法，返回受影响的行数
+
+
+三、添加/修改类型
+    前端：
+        1.点击按钮，弹出添加/修改类型的模态框
+            1.如果是修改类型，需要将类型名称显示在模态框中
+            2.点击保存按钮，调用ajax发送请求
+            3.接收后台返回的resultInfo json数据
+            4.判断code是否为1，如果为1，添加/修改成功，刷新页面
+            5.如果code不为1，添加/修改失败，弹出提示信息
+
+        如果是添加类型，则弹出新的模态框
+        在新的模态框中进行添加操作
+
+
+
+    后端：
+        web层：
+            1.接收参数（类型名称，用户行为（修改或者删除））
+            2.获取Session作用域中的user对象，得到用户ID
+            3.调用Service的更新操作，返回ResultInfo对象
+            4.将ResultInfo对象转换为JSON格式的字符串，相应给ajax的回调函数
+
+        Service层
+            1.判断参数是修改还是删除
+            2.判断类型名称是否重复
+
+                3.如果为添加操作，调用Dao层的添加方法，返回受影响的行数
+
+                4.如果为删除操作，调用Dao层的更新方法，返回受影响的行数
+
+            5.判断受影响的行数是否大于0，大于0，添加/修改成功，返回ResultInfo对象
+                code=1，msg="添加/修改成功" 返回resultInfo对象
+            6.如果受影响的行数小于等于0，添加/修改失败，返回ResultInfo对象
+
+        Dao层：
+            1.判断类型名称是否重复
+            2.如果为添加操作，调用Dao层的添加方法，返回受影响的行数
+            3.如果类型I修改操作，调用Dao层的更新方法，返回受影响的行数
+
+            判断类型名称是否重复
+            1.编写sql语句，通过类型名称查询类型记录数量
+                String sql="select count(*) from tb_note_type where userid=? and typename=?";
+            2.设置参数列表
+            3.调用BaseDao的查询方法，返回数量
+
+            添加类型
+            1.编写sql语句，添加类型
+                String sql="insert into tb_note_type (typename,userid) values(?,?)";
+            2.设置参数列表
+            3.调用BaseDao的更新方法，返回受影响的行数
+
+            修改类型
+            1.编写sql语句，修改类型
+                String sql="update tb_note_type set typename=? where id=?";
+            2.设置参数列表
+            3.调用BaseDao的更新方法，返回受影响的行数

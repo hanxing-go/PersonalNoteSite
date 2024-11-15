@@ -1,0 +1,12 @@
+java Bean 值Bean(无参构造器需求)
+          工具Bean
+
+
+dao     数据库相关的
+filter  过滤器
+po      javabean实体类
+service 服务层，相当于是一个代理
+util    工具类
+vo      报错信息
+web     Servlet类
+

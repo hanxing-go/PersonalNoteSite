@@ -1,0 +1,239 @@
+用户行为 actionName
+进入发布笔记页面 actionName=view
+添加或修改笔记 actionName=addOrUpdate
+查询笔记详情  actionName=detail
+删除笔记 actionName=delete
+查询笔记列表 actionName=list
+
+##
+一、进入发布笔记页面
+前端：
+    设置导航栏的连接
+    <a href="write.jsp">发布笔记</a>
+
+后端：
+    1.从session中获取用户信息
+    2.通过用户ID查询对应的类型列表
+    3.将类型列表设置到request域中
+    4.请求转发到write.jsp页面
+
+
+二、加载富文本编辑器
+    1.下载富文本编辑器的压缩包(utf-8),解压压缩包
+    2.将解压后的目录中对应的utf8-jsp目录下的所有文件复制到项目的statics目录下
+    3.将修改utf8-jsp文件夹的名称，设置为udeditor
+    4.将ueditor目录下的jsp目录下的lib目录中对应的jar包复制到项目的WEB-INF/lib目录下
+    5.在write.jsp页面中引入富文本编辑器的js文件
+    6.修改配置文件
+        a.在ueditor目录下的uditor.config.js文件
+           设置编辑器资源文件的根路径（相当于网站根路径的相对路径）
+           将20行的注释copy到22行
+              window.UEDITOR_HOME_URL = "/xxxx/xxxx/";
+           改成
+              window.UEDITOR_HOME_URL = "/javaweb_new/static/ueditor/";
+        b.在ueditor目录下的jsp目录下的config.json文件
+            修改第11行与第12行的配置
+            "imageUrlPrefix": "/javaweb_new/static/", /* 图片访问路径前缀 */
+            "imagePathFormat": "/javaweb_new/static/ueditor/jsp/upload/image/{yyyy}{mm}{dd}/{time}{rand:6}", /* 上传保存路径,可以自定义保存路径和文件名格式 */
+
+    7.引入富文本js文件
+        <script type="text/javascript" charset="utf-8" src="static/ueditor/ueditor.config.js"></script>
+        <script type="text/javascript" charset="utf-8" src="static/ueditor/ueditor.all.min.js"> </script>
+        <script type="text/javascript" charset="utf-8" src="static/ueditor/lang/zh-cn/zh-cn.js"></script>
+    准备容器：
+        <textarea id="container" name="content"></textarea>
+    初始化富文本编辑器：
+        <script type="text/javascript">
+            $function()
+                {
+                    var ue = UE.getEditor('content');//加载富文本编辑器
+                }
+        </script>
+    自定义富文本编辑框
+
+三、发布笔记
+前端：
+        表单提交
+               设置表单的提交方式和提交地址
+               在隐藏域中设置用户行为actionName
+               设置表单元素的id与name属性值
+        表单校验
+            1.获取表单元素的值
+            获取下拉框选中的选项
+               var typeId = $("#typeId").val();
+            获取文本框的值
+                var title = $("#title").val();
+            获取富文本编辑器中的内容
+                var content = ue.getContent();//获取富文本编辑器的内容，包含html标签
+                var txt = ue.getContentTxt();//获取富文本编辑器的内容，不包含html标签
+            2.校验表单元素的值
+                校验类型是否选择
+                校验标题是否为空
+                校验内容是否为空
+            3.校验通过，提交表单
+
+后端
+    web层：
+    1.接收参数（类型ID，标题，内容）
+    2.调用业务层的方法，返回resultInfo对象
+    3.判断resultInfo对象中的code值
+        如果code值为1，说明发布成功，重定向到笔记列表页面
+        如果code值不为1，说明发布失败
+            将resultInfo对象设置到request域中，
+            请求转发到write.jsp页面
+
+    Service层：
+    1.接收参数（类型ID，标题，内容）
+    2.参数的非空判断 如果为空，设置resultInfo对象的code值为0，msg值为“参数不能为空”
+    3.调用Dao层的方法，返回受影响的行数
+    4.判断受影响的行数是否大于0
+        如果大于0，说明发布成功，设置resultInfo对象的code值为1
+        如果不大于0，说明发布失败，设置resultInfo对象的code值为0，msg值为“发布失败”
+
+    Dao层：
+        添加笔记，返回受影响的行数
+
+
+
+四、分页查询笔记列表
+    后台：
+    Web层
+        1.接收参数（当前页码，每页显示的条数）
+        2.获取Session中的用户信息
+        3.调用业务层的方法，返回Page对象
+        4.将Page对象设置到request域中
+        5.设置首页动态包含的页面值
+        6.请求转发到docs.jsp页面
+
+    Service层
+        1.参数的非空判断
+            如果分页参数为空，则设置默认值
+        2.查询当前登录用户的笔记数量，返回总记录数，（long类型）
+        3.判断总记录数是否大于0
+            如果大于0，调用Page类的代餐构造，得到其他分页参数的值，返回Page对象
+        4.查询当前登录用户下当前页的数据列表，返回note集合
+        5.将note集合设置到page对象中
+        6.返回page对象
+
+    Dao层
+        1.查询当前登录用户的笔记数量，返回总记录数，（long类型）
+        2.判断总记录数是否大于0
+            如果大于0，调用Page类的带参构造，得到其他分页参数的值，返回Page对象
+        3.查询当前登录用户下当前页的数据列表，返回note集合
+
+五、按笔记类型名称查询笔记列表
+    前端：
+        1.设置可选下拉框
+           <select class="form-select w-auto">
+             <option selected>全部</option>            <%--默认选择全部笔记--%>
+             <option v-for="noteType in noteTypes" :value="noteType.typeId">
+                {{ noteType.typeName }}
+             </option>
+           </select>
+        2.设置下拉框的change事件
+            <select class="form-select w-auto" @change="changeType">
+        3.设置change事件的处理函数
+        4.设置查询笔记列表的方法
+
+    后端:
+        web层：
+            1.接收参数（类型ID）
+            2.获取Session中的用户信息
+            3.调用业务层的方法，返回noteList对象
+            4.将noteList对象设置到request域中
+            5.请求转发到docs.jsp页面
+
+        Service层：
+            1.接收参数（类型ID）
+            2.调用Dao层的方法，返回note集合
+            3.返回note集合
+
+        Dao层：
+            1.查询当前登录用户下当前类型的笔记列表，返回note集合
+            2.如果查询结果为空，返回null
+              设置ResultInfo对象的code值为0，msg值为“没有查询到笔记列表”
+
+六、按笔记标题查询笔记列表
+    前端：
+        1.设置搜索框
+            <input type="text" class="form-control" placeholder="请输入笔记标题" v-model="title">
+        2.设置搜索按钮
+            <button type="button" class="btn btn-primary" @click="search">搜索</button>
+        3.设置搜索按钮的click事件
+        4.设置click事件的处理函数
+        5.设置查询笔记列表的方法
+
+    后端：
+        web层：
+            1.接收参数（标题）
+            2.获取Session中的用户信息
+            3.调用业务层的方法，返回noteList对象
+            4.将noteList对象设置到request域中
+            5.请求转发到docs.jsp页面
+
+        Service层：
+            1.接收参数（标题）
+            2.调用Dao层的方法，返回note集合
+            3.返回note集合
+
+        Dao层：
+            1.查询当前登录用户下当前标题的笔记列表，返回note集合
+            2.如果查询结果为空，返回null
+              设置ResultInfo对象的code值为0，msg值为“没有查询到笔记列表”
+
+七、查询笔记详情
+    前端：
+        1.设置查看按钮
+        3.设置超链接的文本值
+            {{ note.title }}
+        5.设置点击事件的处理函数
+        6.设置查询笔记详情的方法
+
+    后端：
+        web层：
+            1.接收参数（noteID）
+            2.调用业务层的方法，返回note对象
+            3.将note对象设置到request域中
+            4.请求转发到detail.jsp页面
+
+        Service层：
+            1.接收参数（笔记ID）
+            2.调用Dao层的方法，返回note对象
+            3.返回note对象
+
+        Dao层：
+            1.查询当前登录用户下当前ID的笔记详情，返回note对象
+            2.如果查询结果为空，返回null
+              设置ResultInfo对象的code值为0，msg值为“没有查询到笔记详情”
+
+
+八、删除笔记
+    前台：
+        1.设置删除按钮，设置删除按钮的click事件
+            <button type="button" class="btn btn-danger" @click="deleteNote(note.noteId)">删除</button>
+
+        2.设置click事件的处理函数
+            弹出确认框，提示用户是否删除
+
+        4.设置删除笔记的方法
+            成功，刷新页面，且提示删除成功
+            失败，提示删除失败
+    后端
+        Web层
+            1.接收参数（noteId）
+            2.调用业务层Service的方法，返回resultInfo对象
+            3.判断resultInfo对象中的code值
+                如果code值为1，说明删除成功，重定向到笔记列表页面
+                如果code值不为1，说明删除失败
+                    将resultInfo对象设置到request域中，
+                    请求转发到docs.jsp页面
+
+        Service层
+            1.接收参数（noteId）
+            2.调用Dao层的方法，返回受影响的行数
+            3.判断受影响的行数是否大于0
+                如果大于0，说明删除成功，设置resultInfo对象的code值为1
+                如果不大于0，说明删除失败，设置resultInfo对象的code值为0，msg值为“删除失败”
+
+        Dao层
+            删除笔记，返回受影响的行数
